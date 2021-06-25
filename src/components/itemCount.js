@@ -1,5 +1,4 @@
-import React, {useState} from 'react'
-import Button from '@material-ui/core/Button';
+import React, {useState, useRef} from 'react'
 import "./itemCount.css";
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -10,23 +9,25 @@ import ItemTitle from './TitleItem';
 const ItemCount = ({maxStock, productName}) => {
    
    const [number, setNumber] = useState(0);
+   const [btnAllow, setBtnAllow] = useState(false);
+   const [btnDecrementAllow, setBtnDecrementAllow] = useState(false);
+   const buttonRef = useRef(null)
 
    const handleIncrement = () =>{
-      console.log(maxStock)
       if(number < maxStock){
-         setNumber(number + 1)
+         setBtnDecrementAllow(false);
+         return setNumber(number + 1)
       }
-      else
-         window.alert("No hay mas stock del producto");         
+      setBtnAllow(true); 
    }
 
    const handleDecrement = () =>{
-      console.log(number)
+
       if( number > 0 ) {
-         setNumber(number - 1)
+         setBtnAllow(false)
+         return setNumber(number - 1)
       }
-      else 
-         window.alert("No puedes pedir menos que 0");
+      setBtnDecrementAllow(true);
    }
 
    return (
@@ -35,15 +36,14 @@ const ItemCount = ({maxStock, productName}) => {
             <div className="item-contador-title-container">
                <ItemTitle titleText={productName}/>
                <div className="item-contador">
-                  <ButtonContador handler={handleIncrement} icon={<AddIcon/>}/>
+                  <ButtonContador handler={handleIncrement} icon={<AddIcon/>} buttonRef={buttonRef} btnAllow={btnAllow}/>
                   <p>{number}</p>
-                  <ButtonContador handler={handleDecrement} icon={<RemoveIcon/>}/>
+                  <ButtonContador handler={handleDecrement} icon={<RemoveIcon/>} buttonRef={buttonRef} btnAllow={btnDecrementAllow}/>
                </div>   
             </div>   
                <ButtonAddCart/>         
          </div>
       </div>
-
    )
 }
 
